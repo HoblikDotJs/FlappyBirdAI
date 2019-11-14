@@ -3,12 +3,12 @@ let gravity = 2;
 let pipes = [];
 let offset = 250;
 let savedPlayers = [];
-let NUMBEROFPLAYERS = 350;
+let NUMBEROFPLAYERS = 200;
 
 function setup() {
 	createCanvas(1800, 900);
 	for (let i = 0; i < NUMBEROFPLAYERS; i++) {
-		players.push(new Player());
+		players.push(new Player(floor(random(i))));
 	}
 	setInterval(() => {
 		pipes.push(new Pipe(true));
@@ -54,7 +54,7 @@ function pickOne() {
 	}
 	index--;
 	let player = savedPlayers[index];
-	let child = new Player(player.brain.copy());
+	let child = new Player(player.hidden, player.brain.copy());
 	child.brain.mutate(0.1);
 	return child;
 }
@@ -82,13 +82,14 @@ function newgen() {
 }
 
 class Player {
-	constructor(brain) {
+	constructor(h, brain) {
+		this.hidden = h;
 		this.x = 160;
 		this.y = 450;
 		this.r = 26;
 		this.vel = 0;
 		this.dead = false;
-		this.brain = brain || new NeuralNetwork(5, 8, 1);
+		this.brain = brain || new NeuralNetwork(5, this.hidden, 1);
 		this.fitness = 0;
 		this.score = 0;
 		this.percentige = 0;
